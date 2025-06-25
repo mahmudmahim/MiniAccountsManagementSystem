@@ -1,10 +1,16 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    Layout = "_Layout";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome @User.Identity?.Name!</h1>
+    <p>
+        ## Overview
+        This is a Mini Account Management System built with ASP.NET Core Razor Pages, MS SQL Server (using stored procedures), and 
+        ASP.NET Identity with custom roles (Admin, Accountant, Viewer). The application supports managing users and roles, 
+        a hierarchical chart of accounts, and voucher entry (Journal, Payment, Receipt).
+    </p>
+    <a type="submit" class="btn btn-primary w-40 text-light fw-bold" asp-page="/Login/LoginIndex">Login</a>
 </div>

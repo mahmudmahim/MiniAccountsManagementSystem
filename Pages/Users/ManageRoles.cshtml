@@ -1,4 +1,30 @@
-﻿@page
+﻿@page "{userId}"
 @model MiniAccountManagementSystem.Pages.Users.ManageRolesModel
 @{
+    ViewData["Title"] = "Manage Roles for @Model.User?.UserName";
 }
+
+<h2>Manage Roles for @Model.User?.UserName</h2>
+<form method="post">
+    <div>
+        <label>Assign Role:</label>
+        <select asp-for="SelectedRole" asp-items="Model.Roles">
+            <option value="">-- Select Role --</option>
+        </select>
+        <button type="submit" asp-page-handler="Assign">Assign</button>
+    </div>
+    <div>
+        <h3>Current Roles</h3>
+        <ul>
+            @foreach (var role in Model.UserRoles)
+            {
+                <li>
+                    @role <form method="post" asp-page-handler="Remove" asp-route-roleName="@role" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure?')">Remove</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </div>
+</form>
+

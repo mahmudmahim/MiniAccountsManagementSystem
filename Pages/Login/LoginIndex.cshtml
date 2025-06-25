@@ -1,0 +1,41 @@
+﻿@page
+@model MiniAccountManagementSystem.Pages.Login.LoginIndexModel
+@{
+    ViewData["Title"] = "Login";
+}
+<h2>Login</h2>
+<div class="container flex-grow-1">
+    <main role="main" class="pb-3">
+        @if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            <div class="login-container">
+                <div class="card">
+                    <h2 class="card-title text-center mb-4">Login</h2>
+                    <form method="post" asp-page="/Login/LoginIndex">
+                        <div class="form-group mb-3">
+                            <label asp-for="Input.Email">Username or Email</label>
+                            <input asp-for="Input.Email" class="form-control" placeholder="Enter username or email" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Input.Password">Password</label>
+                            <input asp-for="Input.Password" type="password" class="form-control" placeholder="Enter password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div>
+                <a class="nav-link" asp-page="/Login/LoginIndex">Click here to redirect to Login</a>
+            </div>
+        }
+    </main>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
