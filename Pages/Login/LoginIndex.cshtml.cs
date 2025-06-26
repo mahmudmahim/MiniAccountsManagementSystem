@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -27,10 +28,14 @@ namespace MiniAccountManagementSystem.Pages.Login
 
         public IActionResult OnGet()
         {
-            if (User.Identity?.IsAuthenticated ?? false)
+            if (!User.Identity?.IsAuthenticated ?? true)
             {
-                return RedirectToPage("/Index");
+                HttpContext.SignOutAsync();
             }
+            //if (User.Identity?.IsAuthenticated ?? false)
+            //{
+            //    return RedirectToPage("/Index");
+            //}
             return Page();
         }
 

@@ -1,4 +1,17 @@
 ﻿@page
 @model MiniAccountManagementSystem.Pages.Accounts.IndexModel
 @{
+    ViewData["Title"] = "Chart of Accounts";
 }
+<h2>Chart of Accounts</h2>
+<a asp-page="Create">Create New Account</a>
+<ul>
+    @foreach (var account in Model.Accounts)
+    {
+        <li>
+            @account.AccountName (@account.AccountType)
+            <a asp-page="Edit" asp-route-id="@account.AccountId">Edit</a> |
+            <a asp-page="Delete" asp-route-id="@account.AccountId">Delete</a>
+        </li>
+    }
+</ul>

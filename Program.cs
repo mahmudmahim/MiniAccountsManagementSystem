@@ -31,11 +31,21 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/", async context =>
+{
+    if (!context.User.Identity?.IsAuthenticated ?? true)
+    {
+        context.Response.Redirect("/Login/LoginIndex");
+    }
+    else
+    {
+        context.Response.Redirect("/Index");
+    }
+});
 
 app.MapRazorPages();
 
