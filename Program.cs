@@ -14,6 +14,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<DbAccess>();
 
 var app = builder.Build();
 

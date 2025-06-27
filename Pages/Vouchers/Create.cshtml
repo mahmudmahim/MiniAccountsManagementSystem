@@ -1,4 +1,133 @@
 ﻿@page
 @model MiniAccountManagementSystem.Pages.Vouchers.CreateModel
 @{
+    ViewData["Title"] = "Create Voucher";
+    Layout = "_Layout";
+}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Create New Voucher</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="voucherForm">
+                        <div class="form-group">
+                            <label asp-for="Voucher.VoucherType">Voucher Type</label>
+                            <input asp-for="Voucher.VoucherType" class="form-control form-control-sm" />
+                            <span asp-validation-for="Voucher.VoucherType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Voucher.ReferenceNo">Reference No</label>
+                            <input asp-for="Voucher.ReferenceNo" class="form-control form-control-sm" />
+                            <span asp-validation-for="Voucher.ReferenceNo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Voucher.VoucherDate">Date</label>
+                            <input asp-for="Voucher.VoucherDate" class="form-control form-control-sm" type="date" />
+                            <span asp-validation-for="Voucher.VoucherDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Voucher.CreatedBy">Created By</label>
+                            <input asp-for="Voucher.CreatedBy" class="form-control form-control-sm" value="@User.Identity?.Name" readonly />
+                            <span asp-validation-for="Voucher.CreatedBy" class="text-danger"></span>
+                        </div>
+                        <div id="entriesContainer">
+                            <h5>Entries</h5>
+                            <div class="entry-row form-group row mb-3" data-index="0">
+                                <div class="col-md-3">
+                                    <label>Account</label>
+                                    <select name="Voucher.Entries[0].AccountId" class="form-control account-select">
+                                        <option value="">Select Account</option>
+                                        @foreach (var account in Model.AccountsList)
+                                        {
+                                            <option value="@account.AccountId">@account.AccountName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Debit</label>
+                                    <input type="number" step="0.01" name="Voucher.Entries[0].Debit" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Credit</label>
+                                    <input type="number" step="0.01" name="Voucher.Entries[0].Credit" class="form-control" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger mt-4 remove-entry" style="display: none;">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addEntry" class="btn btn-secondary mb-3">Add Entry</button>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <a asp-page="/Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('addEntry').addEventListener('click', function() {
+            const container = document.getElementById('entriesContainer');
+            const rows = container.getElementsByClassName('entry-row');
+            const index = rows.length;
+            const newRow = document.createElement('div');
+            newRow.className = 'entry-row form-group row mb-3';
+            newRow.setAttribute('data-index', index);
+            newRow.innerHTML = `
+                <div class="col-md-3">
+                    <label>Account</label>
+                    <select name="Voucher.Entries[${index}].AccountId" class="form-control account-select">
+                        <option value="">Select Account</option>
+        @foreach (var account in Model.AccountsList)
+        {
+                                <option value="@account.AccountId">@account.AccountName</option>
+        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Debit</label>
+                    <input type="number" step="0.01" name="Voucher.Entries[${index}].Debit" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label>Credit</label>
+                    <input type="number" step="0.01" name="Voucher.Entries[${index}].Credit" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger mt-4 remove-entry">Remove</button>
+                </div>
+            `;
+            container.appendChild(newRow);
+
+            // Show remove button for all rows except the first one
+            document.querySelectorAll('.remove-entry').forEach((btn, i) => {
+                btn.style.display = i > 0 ? 'block' : 'none';
+            });
+
+            // Add remove event listener
+            newRow.querySelector('.remove-entry').addEventListener('click', function() {
+                newRow.remove();
+                reindexEntries();
+            });
+        });
+
+        function reindexEntries() {
+            const rows = document.querySelectorAll('.entry-row');
+            rows.forEach((row, index) => {
+                row.setAttribute('data-index', index);
+                row.querySelectorAll('select, input').forEach(input => {
+                    const name = input.getAttribute('name').replace(/Voucher\.Entries\[\d+\]/, `Voucher.Entries[${index}]`);
+                    input.setAttribute('name', name);
+                });
+                row.querySelector('.remove-entry').style.display = index > 0 ? 'block' : 'none';
+            });
+        }
+    </script>
 }
