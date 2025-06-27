@@ -48,6 +48,7 @@ namespace MiniAccountManagementSystem.Pages.Vouchers
             var entriesJson = JsonSerializer.Serialize(Voucher.Entries);
             var parameters = new[]
             {
+                new SqlParameter("@Action", "INSERT"),
                 new SqlParameter("@VoucherType", Voucher.VoucherType),
                 new SqlParameter("@ReferenceNo", Voucher.ReferenceNo),
                 new SqlParameter("@VoucherDate", Voucher.VoucherDate),

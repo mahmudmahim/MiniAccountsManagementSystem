@@ -1,7 +1,7 @@
-﻿@page
-@model MiniAccountManagementSystem.Pages.Vouchers.CreateModel
+﻿@page "{id:int}"
+@model MiniAccountManagementSystem.Pages.Vouchers.EditModel
 @{
-    ViewData["Title"] = "Create Voucher";
+    ViewData["Title"] = "Edit Voucher";
     Layout = "_Layout";
 }
 <div class="container-fluid py-4">
@@ -9,65 +9,64 @@
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Create New Voucher</h3>
+                    <h3 class="card-title">Edit Voucher</h3>
                 </div>
                 <div class="card-body">
                     <form method="post" id="voucherForm">
                         <div class="form-group">
                             <label asp-for="Voucher.VoucherType">Voucher Type</label>
-                            <select asp-for="Voucher.VoucherType" class="form-control account-select">
-                                <option value="">Select Voucher</option>
-                                <option value="Journal Vouchers">Journal Vouchers</option>
-                                <option value="Payment Vouchers">Payment Vouchers</option>
-                                <option value="Receipt Vouchers">Receipt Vouchers</option>
-                            </select>
+                            <input asp-for="Voucher.VoucherType" class="form-control" />
                             <span asp-validation-for="Voucher.VoucherType" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Voucher.ReferenceNo">Reference No</label>
-                            <input asp-for="Voucher.ReferenceNo" class="form-control form-control-sm" />
+                            <input asp-for="Voucher.ReferenceNo" class="form-control" />
                             <span asp-validation-for="Voucher.ReferenceNo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Voucher.VoucherDate">Date</label>
-                            <input asp-for="Voucher.VoucherDate" class="form-control form-control-sm" type="date" />
+                            <input asp-for="Voucher.VoucherDate" class="form-control" type="date" />
                             <span asp-validation-for="Voucher.VoucherDate" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Voucher.CreatedBy">Created By</label>
-                            <input asp-for="Voucher.CreatedBy" class="form-control form-control-sm" value="@User.Identity?.Name" readonly />
+                            <input asp-for="Voucher.CreatedBy" class="form-control" value="@User.Identity?.Name" readonly />
                             <span asp-validation-for="Voucher.CreatedBy" class="text-danger"></span>
                         </div>
                         <div id="entriesContainer">
                             <h5>Entries</h5>
-                            <div class="entry-row form-group row mb-3" data-index="0">
-                                <div class="col-md-3">
-                                    <label>Account</label>
-                                    <select name="Voucher.Entries[0].AccountId" class="form-control account-select">
-                                        <option value="">Select Account</option>
-                                        @foreach (var account in Model.AccountsList)
-                                        {
-                                            <option value="@account.AccountId">@account.AccountName</option>
-                                        }
-                                    </select>
+                            @for (int i = 0; i < Model.Voucher.Entries.Count; i++)
+                            {
+                                <div class="entry-row form-group row mb-3" data-index="@i">
+                                    <div class="col-md-3">
+                                        <label>Account</label>
+                                        <select name="Voucher.Entries[@i].AccountId" class="form-control account-select">
+                                            <option value="">Select Account</option>
+                                            @foreach (var account in Model.AccountsList)
+                                            {
+
+                                                <option value="@account.AccountId" @@(account.AccountId == Model.Voucher.Entries[i].AccountId ? "selected" : "")>@account.AccountName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Debit</label>
+                                        <input type="number" step="0.01" name="Voucher.Entries[@i].Debit" class="form-control" value="@Model.Voucher.Entries[i].Debit" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Credit</label>
+                                        <input type="number" step="0.01" name="Voucher.Entries[@i].Credit" class="form-control" value="@Model.Voucher.Entries[i].Credit" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger mt-4 remove-entry" style="display: @(i == 0 ? "none" : "block");">Remove</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>Debit</label>
-                                    <input type="number" step="0.01" name="Voucher.Entries[0].Debit" class="form-control" />
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Credit</label>
-                                    <input type="number" step="0.01" name="Voucher.Entries[0].Credit" class="form-control" />
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger mt-4 remove-entry" style="display: none;">Remove</button>
-                                </div>
-                            </div>
+                            }
                         </div>
                         <button type="button" id="addEntry" class="btn btn-secondary mb-3">Add Entry</button>
                         <div class="mt-3">
-                            <button type="submit" class="btn btn-primary">Create</button>
-                            <a asp-page="/Accounts/AccountsIndex" class="btn btn-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a asp-page="Index" class="btn btn-secondary">Back to List</a>
                         </div>
                     </form>
                 </div>
@@ -81,8 +80,7 @@
     <script>
         document.getElementById('addEntry').addEventListener('click', function() {
             const container = document.getElementById('entriesContainer');
-            const rows = container.getElementsByClassName('entry-row');
-            const index = rows.length;
+            const index = container.getElementsByClassName('entry-row').length;
             const newRow = document.createElement('div');
             newRow.className = 'entry-row form-group row mb-3';
             newRow.setAttribute('data-index', index);
@@ -91,10 +89,10 @@
                     <label>Account</label>
                     <select name="Voucher.Entries[${index}].AccountId" class="form-control account-select">
                         <option value="">Select Account</option>
-        @foreach (var account in Model.AccountsList)
-        {
-                                <option value="@account.AccountId">@account.AccountName</option>
-        }
+                                @foreach (var account in Model.AccountsList)
+                                {
+                                    <option value="@account.AccountId">@account.AccountName</option>
+                                }
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -111,12 +109,10 @@
             `;
             container.appendChild(newRow);
 
-            // Show remove button for all rows except the first one
-            document.querySelectorAll('.remove-entry').forEach((btn, i) => {
-                btn.style.display = i > 0 ? 'block' : 'none';
+            document.querySelectorAll('.remove-entry').forEach(btn => {
+                btn.style.display = index > 0 ? 'block' : 'none';
             });
 
-            // Add remove event listener
             newRow.querySelector('.remove-entry').addEventListener('click', function() {
                 newRow.remove();
                 reindexEntries();
@@ -128,7 +124,7 @@
             rows.forEach((row, index) => {
                 row.setAttribute('data-index', index);
                 row.querySelectorAll('select, input').forEach(input => {
-                    const name = input.getAttribute('name').replace(/Voucher\.Entries\[\d+\]/, `Voucher.Entries[${index}]`);
+                    const name = input.getAttribute('name').replace(/\[\d+\]/, `[${index}]`);
                     input.setAttribute('name', name);
                 });
                 row.querySelector('.remove-entry').style.display = index > 0 ? 'block' : 'none';
