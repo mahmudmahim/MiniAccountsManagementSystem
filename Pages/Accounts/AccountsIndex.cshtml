@@ -15,6 +15,12 @@
                         {
                             <a asp-page="Create" class="btn btn-primary">Create New Account</a>
                         }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                        {
+                            <form method="post" asp-page-handler="Export" style="display:inline;">
+                                <button type="submit" class="btn btn-success ms-2">Export to Excel</button>
+                            </form>
+                        }
                     </div>
                 </div>
                 <div class="card-body">
