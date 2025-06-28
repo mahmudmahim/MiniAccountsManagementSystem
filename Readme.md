@@ -43,3 +43,6 @@ Validation: Client-side and server-side validation for form inputs.
 <h5>6. Additional Features:</h5>
 Manage Roles: A page to assign or remove roles (e.g., Viewer, Admin) for users, with inline removal confirmation.
 Dynamic Forms: JavaScript enables dynamic addition and removal of voucher entries.
+
+
+<h3>To See the View of the Application go to Image folder. Thank You!!</h3>
