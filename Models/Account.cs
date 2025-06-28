@@ -9,5 +9,6 @@
         public DateTime CreatedDate { get; set; }
         public int? ParentAccountId { get; set; } 
         public Account? ParentAccount { get; set; }
+        public int? Level { get; set; }
     }
 }

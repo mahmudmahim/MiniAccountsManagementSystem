@@ -11,7 +11,10 @@
                 <div class="card-header">
                     <h3 class="card-title">Chart of Accounts</h3>
                     <div class="card-tools">
-                        <a asp-page="Create" class="btn btn-primary">Create New Account</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                        {
+                            <a asp-page="Create" class="btn btn-primary">Create New Account</a>
+                        }
                     </div>
                 </div>
                 <div class="card-body">
@@ -25,7 +28,10 @@
                                     <th>Account Type</th>
                                     <th>Balance</th>
                                     <th>Created Date</th>
-                                    <th>Actions</th>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                                    {
+                                        <th>Actions</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -36,10 +42,13 @@
                                         <td>@item.AccountName</td>
                                         <td>@item.AccountType</td>
                                         <td>@item.Balance.ToString("C")</td>
-                                        <td>@item.CreatedDate.ToShortDateString()</td>
+                                        <td>@item.CreatedDate.ToString("dd-MMM-yyyy")</td>
                                         <td>
-                                            <a asp-page="./Edit" asp-route-id="@item.AccountId" class="btn btn-sm btn-warning">Edit</a>
-                                            <a asp-page="./Delete" asp-route-id="@item.AccountId" class="btn btn-sm btn-danger">Delete</a>
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                                            {
+                                                <a asp-page="./Edit" asp-route-id="@item.AccountId" class="btn btn-sm btn-warning">Edit</a>
+                                                <a asp-page="./Delete" asp-route-id="@item.AccountId" class="btn btn-sm btn-danger">Delete</a>
+                                            }                                          
                                         </td>
                                     </tr>
                                 }
@@ -49,6 +58,40 @@
                     else
                     {
                         <p class="text-muted">No accounts found.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- New Section for Account Tree -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3 class="card-title">Account Hierarchy Tree</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.AccountTree != null && Model.AccountTree.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var account in Model.AccountTree.Where(a => a.ParentAccountId == null)) // Start with top-level accounts
+                            {
+                                <li class="list-group-item">
+                                    <div style="margin-left: @(account.Level * 20)px;">
+                                        @account.AccountName (ID: @account.AccountId, Balance: @account.Balance.ToString("C"), Type: @account.AccountType)
+                                        <div class="btn-group btn-group-sm float-end">
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                                            {
+                                                <a asp-page="./Edit" asp-route-id="@account.AccountId" class="btn btn-warning">Edit</a>
+                                                <a asp-page="./Delete" asp-route-id="@account.AccountId" class="btn btn-danger">Delete</a>
+                                            }  
+                                        </div>
+                                    </div>
+                                    @await Html.PartialAsync("_AccountTree", new { Accounts = Model.AccountTree, ParentId = account.AccountId, Level = account.Level })
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No hierarchical data available.</p>
                     }
                 </div>
             </div>

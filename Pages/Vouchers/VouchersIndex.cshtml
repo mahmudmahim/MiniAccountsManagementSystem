@@ -11,7 +11,10 @@
                 <div class="card-header">
                     <h3 class="card-title">Voucher Entries</h3>
                     <div class="card-tools">
-                        <a asp-page="Create" class="btn btn-primary">Create New Voucher</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                        {
+                            <a asp-page="Create" class="btn btn-primary">Create New Voucher</a>
+                        }
                     </div>
                 </div>
                 <div class="card-body">
@@ -26,7 +29,10 @@
                                     <th>Date</th>
                                     <th>Created By</th>
                                     <th>Total Amount</th>
-                                    <th>Actions</th>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                                    {
+                                        <th>Actions</th>
+                                    }                                   
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,8 +46,11 @@
                                         <td>@item.CreatedBy</td>
                                         <td>@item.Entries.Sum(e => e.Debit - e.Credit).ToString("C")</td>
                                         <td>
-                                            <a asp-page="./Edit" asp-route-id="@item.VoucherId" class="btn btn-sm btn-warning">Edit</a>
-                                            <a asp-page="./Delete" asp-route-id="@item.VoucherId" class="btn btn-sm btn-danger">Delete</a>
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                                            {
+                                                <a asp-page="./Edit" asp-route-id="@item.VoucherId" class="btn btn-sm btn-warning">Edit</a>
+                                                <a asp-page="./Delete" asp-route-id="@item.VoucherId" class="btn btn-sm btn-danger">Delete</a>
+                                            }                                          
                                         </td>
                                     </tr>
                                 }

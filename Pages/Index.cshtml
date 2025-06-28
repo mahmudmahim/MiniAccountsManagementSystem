@@ -7,36 +7,48 @@
     var quickActions = new[]
     {
         new { Title = "Add Account", Href = "/Accounts/Create", Description = "Add a new account to the chart.", Icon = "bi-plus-circle", Color = "bg-gradient-green" },
-        new { Title = "New Voucher", Href = "/Vouchers/Create", Description = "Create a new financial voucher.", Icon = "bi-journal-plus", Color = "bg-gradient-blue" }, 
+        new { Title = "New Voucher", Href = "/Vouchers/Create", Description = "Create a new financial voucher.", Icon = "bi-journal-plus", Color = "bg-gradient-blue" },
         new { Title = "User Management", Href = "/Users/UsersIndex", Description = "Manage roles and users.", Icon = "bi-people", Color = "bg-gradient-purple" }
+    };
+
+    var quickActionsAccountant = new[]
+    {
+        new { Title = "Add Account", Href = "/Accounts/Create", Description = "Add a new account to the chart.", Icon = "bi-plus-circle", Color = "bg-gradient-green" },
+        new { Title = "New Voucher", Href = "/Vouchers/Create", Description = "Create a new financial voucher.", Icon = "bi-journal-plus", Color = "bg-gradient-blue" },
+    };
+
+    var quickActionsForViewer = new[]
+    {
+        new { Title = "View Charts of Accounts", Href = "/Accounts/AccountsIndex", Description = "Add a new account to the chart.", Icon = "bi-plus-circle", Color = "bg-gradient-green" },
+        new { Title = "View Vouchers", Href = "/Vouchers/VouchersIndex", Description = "Create a new financial voucher.", Icon = "bi-journal-plus", Color = "bg-gradient-blue" },
     };
 }
 
 <style>
     .bg-gradient-blue {
-        background: linear-gradient(to bottom right, #3b82f6, #9333ea);
+    background: linear-gradient(to bottom right, #3b82f6, #9333ea);
     }
 
     .bg-gradient-green {
-        background: linear-gradient(to bottom right, #10b981, #3b82f6);
+    background: linear-gradient(to bottom right, #10b981, #3b82f6);
     }
 
     .bg-gradient-purple {
-        background: linear-gradient(to bottom right, #a855f7, #6366f1);
+    background: linear-gradient(to bottom right, #a855f7, #6366f1);
     }
 
     .quick-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
 
     .quick-icon {
-        transition: ease-in-out 0.3s;
+    transition: ease-in-out 0.3s;
     }
 
     .quick-card:hover .quick-icon {
-        transform: scale(1.1);
-        transition: ease-in-out 0.3s;
+    transform: scale(1.1);
+    transition: ease-in-out 0.3s;
     }
 </style>
 <div class="text-center">
@@ -51,24 +63,73 @@
 <div class="mb-5">
     <h2 class="text-2xl fw-bold text-dark mb-4">Quick Actions</h2>
     <div class="row g-4">
-        @foreach (var action in quickActions)
+        @if (User.IsInRole("Admin"))
         {
-            <div class="col-12 col-md-6 col-lg-4">
-                <a href="@action.Href" class="text-decoration-none text-dark">
-                    <div class="card quick-card border-0 shadow-sm transition-all">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-3 @action.Color d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                    <i class="bi @action.Icon text-white fs-5 quick-icon"></i>
+            @foreach (var action in quickActions)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a href="@action.Href" class="text-decoration-none text-dark">
+                        <div class="card quick-card border-0 shadow-sm transition-all">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-3 @action.Color d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="bi @action.Icon text-white fs-5 quick-icon"></i>
+                                    </div>
                                 </div>
+                                <h5 class="card-title fw-semibold mb-1">@action.Title</h5>
+                                <p class="card-text text-muted">@action.Description</p>
                             </div>
-                            <h5 class="card-title fw-semibold mb-1">@action.Title</h5>
-                            <p class="card-text text-muted">@action.Description</p>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            }
         }
+
+        else if (User.IsInRole("Accountant"))
+        {
+            @foreach (var action in quickActionsAccountant)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a href="@action.Href" class="text-decoration-none text-dark">
+                        <div class="card quick-card border-0 shadow-sm transition-all">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-3 @action.Color d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="bi @action.Icon text-white fs-5 quick-icon"></i>
+                                    </div>
+                                </div>
+                                <h5 class="card-title fw-semibold mb-1">@action.Title</h5>
+                                <p class="card-text text-muted">@action.Description</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+
+        else
+        {
+            @foreach (var action in quickActionsForViewer)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a href="@action.Href" class="text-decoration-none text-dark">
+                        <div class="card quick-card border-0 shadow-sm transition-all">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-3 @action.Color d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="bi @action.Icon text-white fs-5 quick-icon"></i>
+                                    </div>
+                                </div>
+                                <h5 class="card-title fw-semibold mb-1">@action.Title</h5>
+                                <p class="card-text text-muted">@action.Description</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+
+
     </div>
 </div>
 

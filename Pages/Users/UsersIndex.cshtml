@@ -5,33 +5,40 @@
 }
 
 <h2>Manage Users</h2>
+<a class="btn btn-outline-primary text-end" asp-asp-page="ManageRoles" asp-route-userId="@Model.SelectedUserId">Manage Roles</a>
+<div class="row">
+    <div class="card-header">
+        
+    </div>
+    <div class="card-body mt-2">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Roles</td>
+                        <td>
+                            <a asp-page="ManageRoles" class="btn btn-warning" asp-route-userId="@user.Id">Edit Roles</a> |
+                            <form method="post" asp-page-handler="Delete" asp-route-userId="@user.Id" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<a asp-asp-page="ManageRoles" asp-route-userId="@Model.SelectedUserId">Manage Roles</a>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-        <tr>
-            <th>User Name</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Users)
-        {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>@user.Roles</td>
-                <td>
-                    <a asp-page="ManageRoles" asp-route-userId="@user.Id">Edit Roles</a> |
-                    <form method="post" asp-page-handler="Delete" asp-route-userId="@user.Id" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 

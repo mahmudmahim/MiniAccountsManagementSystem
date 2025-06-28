@@ -50,7 +50,7 @@ namespace MiniAccountManagementSystem.Pages.Accounts
                 new SqlParameter("@ParentAccountId", (object)Account.ParentAccountId ?? DBNull.Value)
             };
             await _dbAccess.ExecuteNonQueryAsync("sp_ManageChartofAccounts", parameters);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Accounts/AccountsIndex");
         }
 
         private async Task<List<Account>> GetParentAccountsAsync()

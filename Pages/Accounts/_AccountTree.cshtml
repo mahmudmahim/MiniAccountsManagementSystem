@@ -1,0 +1,30 @@
+﻿@using MiniAccountManagementSystem.Models
+@model dynamic
+@{
+    var accounts = Model.Accounts as List<Account>;
+    var parentId = Model.ParentId as int?;
+    var level = Model.Level as int? ?? 0;
+}
+
+@if (accounts != null)
+{
+    var children = accounts.Where(a => a.ParentAccountId == parentId).ToList();
+    foreach (var child in children)
+    {
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div style="margin-left: @((level + 1) * 20)px;">
+                    @child.AccountName (ID: @child.AccountId, Balance: @child.Balance.ToString("C"), Type: @child.AccountType)
+                    <div class="btn-group btn-group-sm float-end">
+                        @if (User.IsInRole("Admin") || User.IsInRole("Accountant"))
+                        {
+                            <a asp-page="./Edit" asp-route-id="@child.AccountId" class="btn btn-warning">Edit</a>
+                            <a asp-page="./Delete" asp-route-id="@child.AccountId" class="btn btn-danger">Delete</a>
+                        }                      
+                    </div>
+                </div>
+                @await Html.PartialAsync("_AccountTree", new { Accounts = accounts, ParentId = child.AccountId, Level = level + 1 })
+            </li>
+        </ul>
+    }
+}
